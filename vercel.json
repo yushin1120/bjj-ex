@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/주짓수게임/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/주짓수게임/$1"
+    }
+  ]
+}
