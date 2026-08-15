@@ -1,0 +1,17 @@
+{
+  "name": "bjj-master-game-app",
+  "version": "1.0.0",
+  "description": "주짓수 기술 승급 수련장 및 체육관 경영 게임 앱",
+  "main": "electron.js",
+  "scripts": {
+    "start": "electron .",
+    "build-win": "electron-builder --win nsis"
+  },
+  "keywords": ["bjj", "game", "pwa", "electron"],
+  "author": "Antigravity",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.0"
+  }
+}

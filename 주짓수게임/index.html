@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>주짓수 기술 승급 수련장</title>
+  <meta name="description" content="32가지 주짓수 기술 동작 순서를 익히고 체육관을 경영하는 주짓수 수련 게임">
+  
+  <!-- PWA 앱 매니페스트 및 모바일 태그 -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0F172A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="주짓수 수련장">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563EB'/><text x='50' y='68' font-size='60' text-anchor='middle'>🥋</text></svg>">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 축하 효과 파티클 캔버스 -->
+  <canvas id="fx-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- 상단 HUD 헤더 -->
+    <header class="hud-header">
+      <div class="hud-brand">
+        <span class="brand-logo">🥋</span>
+        <div class="brand-text-wrap">
+          <h1 class="brand-title">주짓수 기술 승급 수련장</h1>
+          <span class="brand-sub" id="hud-current-gym-name">🏢 본관 주짓수 수련장</span>
+        </div>
+      </div>
+
+      <!-- 선택된 수련 캐릭터 & 레벨 HUD -->
+      <div class="hud-character-card" id="hud-char-card" title="캐릭터 수련 레벨 & 경험치">
+        <span id="hud-char-avatar" class="char-avatar-icon">🐯</span>
+        <div class="char-info-wrap">
+          <div class="char-name-lvl">
+            <span id="hud-char-name" class="char-name">도복 호랑이</span>
+            <span id="hud-char-level" class="char-level-badge">Lv.1</span>
+          </div>
+          <div class="char-exp-bar-wrap">
+            <div id="hud-char-exp-fill" class="char-exp-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+        <button id="btn-change-char" class="btn-sm btn-ghost" title="수련 캐릭터 변경">🎭 캐릭터</button>
+      </div>
+
+      <div class="hud-belt-status">
+        <span id="hud-belt-badge" class="belt-pill-badge belt-white">⚪ 화이트벨트</span>
+        <span id="hud-belt-progress" class="belt-progress-text">⭐ 0개 (0/11 완료)</span>
+      </div>
+
+      <!-- HUD 재화 및 점수 스탯 -->
+      <div class="hud-stats-group">
+        <div class="stat-chip gold-chip" title="체육관 운영 골드 수익">
+          <span class="icon">💰</span>
+          <span id="hud-gold">1,000</span>
+        </div>
+        <div class="stat-chip">
+          <span class="icon">⭐</span>
+          <span id="hud-score">0</span>점
+        </div>
+        <div class="stat-chip">
+          <span class="icon">🏆</span>
+          <span id="hud-pvp-trophies">1,000</span>점
+        </div>
+      </div>
+
+      <div class="hud-nav-actions">
+        <button id="btn-open-gym-page" class="btn btn-primary" title="프리미엄 체육관으로 이동 (수련, 경영 및 대전)">
+          🏢 체육관 이동
+        </button>
+        <button id="btn-open-codex" class="btn btn-secondary" title="주짓수 기술 백과사전">
+          📖 기술 백과
+        </button>
+        <button id="btn-toggle-sound" class="btn btn-secondary btn-icon-only" title="소리 켜기/끄기">
+          🔊
+        </button>
+      </div>
+    </header>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <main id="main-content-area">
+      <!-- 1. 승급 수련 로드맵 트리 뷰 -->
+      <section id="duolingo-roadmap-view" class="duolingo-roadmap-container">
+        <!-- BJJRoadmapView 컴포넌트가 동적으로 렌더링됩니다 -->
+      </section>
+
+      <!-- 2. 순서 맞추기 게임 보드 뷰 (로드맵 노드 클릭 시 바로 입장) -->
+      <section id="game-board-container" class="game-board-container hidden">
+        <!-- DragOrderBoard 컴포넌트가 동적으로 렌더링됩니다 -->
+      </section>
+
+      <!-- 3. 고품격 프리미엄 체육관 뷰 (체육관 이동 버튼 클릭 시 입장 - 경영, 수련 & 대전) -->
+      <section id="premium-gym-view" class="premium-gym-container hidden">
+        <!-- PremiumGymView 컴포넌트가 동적으로 렌더링됩니다 -->
+      </section>
+    </main>
+  </div>
+
+  <!-- 캐릭터 선택 모달 -->
+  <div id="character-select-modal" class="modal-overlay hidden">
+    <div class="modal-card char-select-modal-card">
+      <div class="modal-header">
+        <h3>🎭 함께 수련할 캐릭터를 선택하세요!</h3>
+        <button class="btn-close-modal">✕</button>
+      </div>
+      <p class="modal-sub">선택한 캐릭터와 함께 기술을 맞추고 레벨업하며 키워나가세요!</p>
+      
+      <div class="character-cards-grid" id="char-cards-grid">
+        <!-- 동적으로 캐릭터 카드 생성 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 스테이지 시작 안내 모달 -->
+  <div id="stage-start-modal" class="modal-overlay hidden">
+    <div class="modal-card victory-modal-card">
+      <span id="stage-modal-icon" class="victory-icon">🥋</span>
+      <h2 id="stage-modal-title" class="victory-title">마운트 포지션 암바</h2>
+      <p id="stage-modal-belt" class="belt-pill-badge belt-white">⚪ 화이트벨트 1단계</p>
+      <div class="tech-desc-box" style="margin: 12px 0;">
+        <p id="stage-modal-desc">상대방 가슴 위에 올라탄 마운트 자세에서 팔을 고립시켜 꺾는 세부 동작 순서를 맞춰보세요!</p>
+      </div>
+      <button id="btn-start-stage-now" class="btn btn-primary btn-large">
+        🚀 순서 맞추기 수련 시작하기
+      </button>
+    </div>
+  </div>
+
+  <!-- 정답 성공 축하 모달 -->
+  <div id="victory-modal" class="modal-overlay hidden">
+    <div class="modal-card victory-modal-card">
+      <span class="victory-icon">🎉</span>
+      <h2 class="victory-title">완벽한 기술 성공!</h2>
+      <p id="victory-tech-name" class="tech-name">마운트 포지션 암바</p>
+      <div id="victory-stars" class="victory-stars-row">⭐⭐⭐</div>
+      <div class="points-earned-tag">+<span id="victory-points">150</span>점 & 관비 💰 +200골드 & 수련 경험치 +100 EXP!</div>
+      
+      <div id="promotion-banner" class="promotion-banner hidden">
+        🏆 축하합니다! <span id="promoted-belt-name">블루벨트</span>(으)로 승급하셨습니다!
+      </div>
+
+      <div class="tech-desc-box">
+        <p id="victory-explanation">모든 세부 동작 순서를 완벽하게 기억하여 깔끔하게 성공시켰습니다! 로드맵의 다음 기술이 해금되었습니다.</p>
+      </div>
+
+      <button id="btn-next-technique" class="btn btn-primary btn-large">
+        ➡️ 로드맵 다음 기술 도전하기
+      </button>
+    </div>
+  </div>
+
+  <!-- 주짓수 기술 백과사전 모달 -->
+  <div id="codex-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📖 주짓수 기술 세부 백과사전</h3>
+        <button class="btn-close-modal">✕</button>
+      </div>
+      <div class="modal-body-content">
+        <!-- CodexModal 컴포넌트가 렌더링됩니다 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 스탠드얼론 실행 스크립트 -->
+  <script src="app.js"></script>
+
+  <!-- PWA 서비스 워커 등록 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker registered:', reg.scope))
+          .catch(err => console.log('Service Worker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
