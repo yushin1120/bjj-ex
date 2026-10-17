@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Math Agent - 사진으로 배우는 수학 풀이</title>
+  <meta name="description" content="수학 문제 사진을 올리면 그림과 함께 단계별로 설명해주는 AI 수학 에이전트">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="solver.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <main class="app">
+    <h1>🧮 AI Math Agent</h1>
+    <p class="sub">문제 사진을 올리면 그림과 함께 단계별로 설명해드려요</p>
+
+    <section class="card" aria-labelledby="photo-title">
+      <h2 id="photo-title">📷 사진으로 문제 풀기</h2>
+      <div class="settings">
+        <select id="provider-select" aria-label="AI 종류">
+          <option value="gemini">Google Gemini</option>
+          <option value="openai">OpenAI GPT</option>
+          <option value="anthropic">Anthropic Claude</option>
+        </select>
+        <select id="model-select" aria-label="모델"></select>
+      </div>
+      <div class="settings">
+        <input id="api-key" type="password" placeholder="API 키" autocomplete="off">
+      </div>
+      <label class="toggle"><input id="svg-toggle" type="checkbox" checked> 단계별 그림 포함 (끄면 훨씬 빨라요)</label>
+      <label id="drop-zone" for="photo-input">
+        수학 문제 사진을 선택, 드래그 또는 붙여넣기(Ctrl+V)
+        <input id="photo-input" type="file" accept="image/*">
+      </label>
+      <img id="preview" alt="업로드한 문제 사진" hidden>
+      <button id="solve-btn" type="button" disabled>그림으로 단계별 설명해줘</button>
+      <div id="solution" aria-live="polite"></div>
+    </section>
+  </main>
+  <script src="config.js"></script>
+  <script src="solver.js"></script>
+</body>
+</html>
