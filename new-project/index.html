@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TubeMaker - 브라우저에서 유튜브 영상 만들기</title>
+  <meta name="description" content="글과 사진, 음악만 넣으면 유튜브용 영상(WebM)을 브라우저에서 바로 만들어주는 무료 영상 메이커">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1><span class="logo">▶</span> TubeMaker</h1>
+    <p>글 · 사진 · 음악으로 유튜브 영상을 바로 만들어요</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel slides-panel" aria-labelledby="slides-title">
+      <h2 id="slides-title">장면 목록</h2>
+      <ul id="slide-list" class="slide-list"></ul>
+      <button id="add-slide" class="btn ghost" type="button">＋ 장면 추가</button>
+    </section>
+
+    <section class="panel stage" aria-labelledby="preview-title">
+      <h2 id="preview-title">미리보기</h2>
+      <div class="canvas-wrap"><canvas id="stage" width="1280" height="720"></canvas></div>
+      <div class="controls">
+        <button id="play-btn" class="btn" type="button">▶ 미리보기</button>
+        <button id="make-btn" class="btn primary" type="button">🎬 영상 만들기</button>
+      </div>
+      <div id="progress" class="progress" hidden><div id="bar"></div></div>
+      <p id="status" class="status" aria-live="polite"></p>
+      <a id="download" class="btn primary" hidden>⬇ 영상 다운로드</a>
+      <video id="result" controls hidden></video>
+    </section>
+
+    <section class="panel editor" aria-labelledby="edit-title">
+      <h2 id="edit-title">장면 편집</h2>
+      <label>제목 문구<textarea id="f-text" rows="3" placeholder="화면에 크게 나올 글"></textarea></label>
+      <label>보조 문구<input id="f-sub" type="text" placeholder="작게 나올 설명 (선택)"></label>
+      <label>길이 <b id="dur-val">4</b>초<input id="f-dur" type="range" min="2" max="12" value="4"></label>
+      <label>배경 사진<input id="f-img" type="file" accept="image/*"></label>
+      <button id="rm-img" class="btn ghost small" type="button">사진 제거</button>
+      <div class="field">배경 색상<div id="themes" class="themes"></div></div>
+      <button id="del-slide" class="btn danger small" type="button">이 장면 삭제</button>
+
+      <hr>
+      <h2>영상 설정</h2>
+      <label>화면 비율
+        <select id="f-ratio">
+          <option value="16:9">가로 16:9 (유튜브)</option>
+          <option value="9:16">세로 9:16 (쇼츠)</option>
+          <option value="1:1">정사각 1:1</option>
+        </select>
+      </label>
+      <label>배경 음악 (선택)<input id="f-audio" type="file" accept="audio/*"></label>
+    </section>
+  </main>
+  <section class="lyrics" aria-labelledby="ly-title-h">
+    <h2 id="ly-title-h">🎵 내 노래로 가사 자막 영상 만들기</h2>
+    <p class="hint">노래 파일을 넣으면 AI가 가사를 듣고 시간에 맞춰 자막으로 넣어줘요. 가사를 이미 알고 있다면 붙여넣으면 더 정확해요.</p>
+    <div class="ly-grid">
+      <div class="panel">
+        <h3>1. 준비</h3>
+        <label>노래 파일 (mp3/wav, 15MB 이하)<input id="ly-song" type="file" accept="audio/*"></label>
+        <label>배경 사진 (선택)<input id="ly-bg" type="file" accept="image/*"></label>
+        <label>영상 제목<input id="ly-title" type="text" placeholder="노래 제목"></label>
+        <label>자막 색상<input id="ly-color" type="color" value="#ff6b8b"></label>
+        <label>화면 비율
+          <select id="ly-ratio"><option value="16:9">가로 16:9</option><option value="9:16">세로 9:16 (쇼츠)</option></select>
+        </label>
+        <hr>
+        <h3>2. AI 가사 싱크</h3>
+        <label>AI 모델<select id="ly-model"></select></label>
+        <label>Gemini API 키<input id="ly-key" type="password" placeholder="API 키" autocomplete="off"></label>
+        <label>가사 (선택, 있으면 더 정확)<textarea id="ly-given" rows="4" placeholder="가사를 알고 있으면 붙여넣기"></textarea></label>
+        <button id="ly-analyze" class="btn primary" type="button" disabled>🤖 가사 자동 싱크</button>
+      </div>
+      <div class="panel">
+        <h3>3. 미리보기 &amp; 제작</h3>
+        <div class="canvas-wrap"><canvas id="ly-canvas" width="1280" height="720"></canvas></div>
+        <div class="controls">
+          <button id="ly-play" class="btn" type="button">▶ 미리보기</button>
+          <button id="ly-make" class="btn primary" type="button">🎬 가사 영상 만들기</button>
+        </div>
+        <div id="ly-progress" class="progress" hidden><div id="ly-bar"></div></div>
+        <p id="ly-status" class="status" aria-live="polite"></p>
+        <a id="ly-download" class="btn primary" hidden>⬇ 영상 다운로드</a>
+        <video id="ly-result" controls hidden></video>
+      </div>
+      <div class="panel">
+        <h3>가사 / 시간 편집</h3>
+        <p class="hint small-hint">한 줄에 <code>[분:초.소수] 가사</code> 형식이에요. 시간이 어긋나면 직접 고치세요. 시간 표시 없이 가사만 넣으면 노래 길이에 맞춰 균등하게 배분해요.</p>
+        <textarea id="ly-lrc" class="lrc-box" rows="18" placeholder="[00:12.50] 첫 번째 가사&#10;[00:17.00] 두 번째 가사"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script src="lyrics.js"></script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PassageMemo - 영어 본문 빈칸 암기 & 해석 마스터</title>
+  <meta name="description" content="영어 본문과 해석을 입력하면 난이도별로 스마트하게 빈칸을 뚫어주고 바로 밑줄에 직관적인 해석을 제공하는 최고의 본문 암기 학습 도구">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <!-- 브라우저 자체 로컬 OCR 엔진 (AI/API 키 불필요) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+  <div class="background-glow glow-1"></div>
+  <div class="background-glow glow-2"></div>
+
+  <!-- 인쇄 전용 헤더 (화면에서는 숨김) -->
+  <div class="print-header" id="print-header" aria-hidden="true">
+    <div class="print-title" id="print-title-text">영어 본문 빈칸 완성 테스트</div>
+    <div class="print-meta">
+      <span>학년 / 반: ___________</span>
+      <span>이름: ___________</span>
+      <span>점수: _____ / 100</span>
+    </div>
+  </div>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-badge" id="brand-badge">EN</div>
+        <div class="brand-text">
+          <h1 class="logo-title">PassageMemo</h1>
+          <p class="logo-subtitle">본문 영어 &amp; 밑줄 해석 빈칸 암기 시스템</p>
+        </div>
+      </div>
+      <nav class="nav-actions">
+        <button id="btn-mode-input" class="nav-tab active" type="button" aria-selected="true">
+          <span class="tab-icon">✏️</span> 본문 입력 &amp; 설정
+        </button>
+        <button id="btn-mode-study" class="nav-tab" type="button" aria-selected="false">
+          <span class="tab-icon">🎯</span> 빈칸 학습하기
+        </button>
+        <button id="btn-print-sheet" class="nav-btn print-btn" type="button" title="학습지 시험지 형태로 인쇄하거나 PDF로 저장">
+          <span class="tab-icon">🖨️</span> 시험지 인쇄
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- ================= 1. 입력 모드 ================= -->
+    <section id="view-input" class="view-section active" aria-labelledby="input-heading">
+      <div class="section-hero">
+        <h2 id="input-heading" class="hero-title">본문과 해석을 넣고 원하는 난이도를 고르세요</h2>
+        <p class="hero-desc">줄바꿈 기준으로 영어 문장과 한국어 해석이 1:1 매칭되어 바로 밑줄에 직관적으로 배치됩니다.</p>
+
+        <!-- 교과서 사진 OCR 추출 토글 버튼 -->
+        <div class="ocr-trigger-wrap">
+          <button id="btn-toggle-ocr" class="ocr-btn" type="button">
+            <span class="ocr-btn-icon">📷</span>
+            <span class="ocr-btn-text">교과서 사진 찍어 본문 &amp; 해석 자동 추출하기 (로컬 OCR)</span>
+            <span class="ocr-badge">로컬 엔진</span>
+          </button>
+        </div>
+
+        <!-- 교과서 사진 OCR 패널 (접이식) -->
+        <div id="ocr-panel" class="glass-card ocr-card" hidden>
+          <div class="ocr-card-header">
+            <div class="ocr-header-title">
+              <span class="ocr-icon">📸</span>
+              <div>
+                <h3 class="ocr-title">교과서 사진 글자 자동 추출 (로컬 OCR)</h3>
+                <p class="ocr-sub">AI API나 키 입력 없이, 브라우저에서 사진 속 글자를 바로 읽어 본문/해석 입력창에 넣어줍니다.</p>
+              </div>
+            </div>
+            <button id="btn-close-ocr" class="action-icon-btn" type="button" title="닫기">✕</button>
+          </div>
+
+          <div class="ocr-config-row">
+            <div class="ocr-model-group">
+              <label for="ocr-lang-select" class="ocr-api-label">인식 언어 모드</label>
+              <select id="ocr-lang-select" class="ocr-model-select">
+                <option value="eng">영어 본문 전용 (eng - 빠르고 정확)</option>
+                <option value="eng+kor">영어 본문 + 한국어 해석 혼합 (eng+kor)</option>
+              </select>
+            </div>
+            <div class="ocr-api-group">
+              <label class="ocr-api-label">엔진 방식</label>
+              <div class="ocr-badge-local">🔒 100% 브라우저 자체 OCR (API 키 불필요)</div>
+            </div>
+          </div>
+
+          <label id="ocr-dropzone" class="ocr-dropzone" for="ocr-file-input">
+            <input id="ocr-file-input" type="file" accept="image/*" capture="environment">
+            <div class="dropzone-content">
+              <span class="drop-icon">🖼️</span>
+              <p class="drop-main-text">교과서 사진을 <strong>클릭하여 선택</strong>하거나 여기로 <strong>드래그</strong>하세요</p>
+              <p class="drop-sub-text">스마트폰에서는 카메라로 바로 촬영할 수 있으며, <code>Ctrl+V</code>로 붙여넣기도 가능합니다.</p>
+            </div>
+          </label>
+
+          <!-- 미리보기 및 진행상태 -->
+          <div id="ocr-preview-wrap" class="ocr-preview-wrap" hidden>
+            <div class="preview-img-box">
+              <img id="ocr-preview-img" alt="선택한 교과서 사진 미리보기">
+            </div>
+            <div class="preview-actions">
+              <button id="btn-run-ocr" class="ocr-run-btn" type="button">
+                <span>⚡ 텍스트 추출 및 번역 시작</span>
+              </button>
+              <button id="btn-cancel-ocr-img" class="chip-btn" type="button">사진 다시 선택</button>
+            </div>
+          </div>
+
+          <div id="ocr-status" class="ocr-status-box" hidden aria-live="polite">
+            <span class="ocr-spinner"></span>
+            <span id="ocr-status-text" class="ocr-status-text">AI가 교과서 사진 속 영어와 해석을 분석하고 있습니다...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 본문 글자 추출 꿀팁 안내 배너 -->
+      <div class="extract-guide-banner" id="extract-guide-banner">
+        <div class="guide-badge-col">
+          <span class="guide-tag">💡 꿀팁</span>
+        </div>
+        <div class="guide-content">
+          <strong class="guide-title">본문 글자 추출하는법:</strong>
+          <span class="guide-body">
+            제미나이나 GPT에게 
+            <button type="button" class="copy-quote-btn" id="btn-copy-quote" data-quote="이 영어 내용만 글자로 따서 문장단위로 엔터치면서 한문단으로 써줘" title="클릭하면 텍스트가 클립보드에 바로 복사됩니다">
+              <span class="quote-symbol">'</span><span class="quote-text">이 영어 내용만 글자로 따서 문장단위로 엔터치면서 한문단으로 써줘</span><span class="quote-symbol">'</span>
+              <span class="copy-pill" id="copy-pill"><span class="copy-icon">📋</span> 클릭 시 복사</span>
+            </button>
+            라고 쓰고 사진을 보내면 쉽습니다.
+          </span>
+        </div>
+      </div>
+
+      <div class="input-grid">
+        <!-- 영어 본문 입력 -->
+        <div class="glass-card input-card">
+          <div class="card-head">
+            <div class="head-left">
+              <span class="head-badge badge-blue">ENGLISH</span>
+              <h3 class="head-title">영어 본문 원문</h3>
+            </div>
+            <span id="en-count-info" class="count-pill">0 문장</span>
+          </div>
+          <p class="input-hint">각 문장을 줄바꿈(엔터)으로 구분해 입력해 주세요.</p>
+          <textarea id="input-en" class="styled-textarea" rows="11" placeholder="예시:&#10;Stay hungry, stay foolish.&#10;Your time is limited, so don't waste it living someone else's life.&#10;Have the courage to follow your heart and intuition."></textarea>
+        </div>
+
+        <!-- 한국어 해석 입력 -->
+        <div class="glass-card input-card">
+          <div class="card-head">
+            <div class="head-left">
+              <span class="head-badge badge-green">KOREAN</span>
+              <h3 class="head-title">한국어 해석 (밑줄에 표시)</h3>
+            </div>
+            <span id="ko-count-info" class="count-pill">0 문장</span>
+          </div>
+          <p class="input-hint">영어 문장과 같은 순서대로 줄바꿈하여 넣어주세요.</p>
+          <textarea id="input-ko" class="styled-textarea" rows="11" placeholder="예시:&#10;계속 갈망하고, 우직하게 나아가십시오.&#10;여러분의 시간은 한정되어 있으니, 다른 사람의 삶을 사느라 낭비하지 마십시오.&#10;여러분의 가슴과 직관을 따를 용기를 가지십시오."></textarea>
+        </div>
+      </div>
+
+      <!-- 난이도 및 옵션 컨트롤 패널 -->
+      <div class="glass-card config-card">
+        <div class="config-section">
+          <h3 class="config-title">🎚️ 빈칸 난이도 선택</h3>
+          <div class="level-selector" role="radiogroup" aria-label="빈칸 난이도">
+            <button class="level-pill" data-level="1" type="button" role="radio" aria-checked="false">
+              <span class="lvl-num">Lv. 1</span>
+              <span class="lvl-name">핵심 단어</span>
+              <span class="lvl-percent">~20% 빈칸</span>
+            </button>
+            <button class="level-pill active" data-level="2" type="button" role="radio" aria-checked="true">
+              <span class="lvl-num">Lv. 2</span>
+              <span class="lvl-name">표준 내신형</span>
+              <span class="lvl-percent">~40% 빈칸</span>
+            </button>
+            <button class="level-pill" data-level="3" type="button" role="radio" aria-checked="false">
+              <span class="lvl-num">Lv. 3</span>
+              <span class="lvl-name">심화 암기</span>
+              <span class="lvl-percent">~60% 빈칸</span>
+            </button>
+            <button class="level-pill" data-level="4" type="button" role="radio" aria-checked="false">
+              <span class="lvl-num">Lv. 4</span>
+              <span class="lvl-name">고난도 실전</span>
+              <span class="lvl-percent">~80% 빈칸</span>
+            </button>
+            <button class="level-pill" data-level="5" type="button" role="radio" aria-checked="false">
+              <span class="lvl-num">Lv. 5</span>
+              <span class="lvl-name">완전 백지 쓰기</span>
+              <span class="lvl-percent">100% 빈칸</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="options-row">
+          <div class="option-col">
+            <h4 class="option-label">학습 방식</h4>
+            <div class="study-mode-toggle">
+              <label class="toggle-option">
+                <input type="radio" name="studyMode" value="typing" id="mode-typing" checked>
+                <span class="radio-custom"></span>
+                <span>⌨️ 직접 타이핑 (실시간 채점)</span>
+              </label>
+              <label class="toggle-option">
+                <input type="radio" name="studyMode" value="flip" id="mode-flip">
+                <span class="radio-custom"></span>
+                <span>👀 클릭 확인 모드 (가림판 열기)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="option-col">
+            <h4 class="option-label">추가 힌트 &amp; 설정</h4>
+            <div class="checkbox-group">
+              <label class="custom-checkbox">
+                <input type="checkbox" id="opt-first-letter" checked>
+                <span class="check-box"></span>
+                <span>첫 글자 힌트 제공 (예: <code class="hint-code">c____</code>)</span>
+              </label>
+              <label class="custom-checkbox">
+                <input type="checkbox" id="opt-case-sensitive">
+                <span class="check-box"></span>
+                <span>대소문자 엄격 구분</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-footer">
+          <div id="mismatch-warning" class="warning-text" hidden>
+            ⚠️ 영어 문장 수와 해석 문장 수가 다릅니다. 확인 후 시작해 주세요.
+          </div>
+          <button id="btn-start-study" class="start-btn" type="button">
+            <span class="btn-shine"></span>
+            <span class="btn-text">🚀 빈칸 학습 시작하기</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. 학습 / 시험 모드 ================= -->
+    <section id="view-study" class="view-section" aria-labelledby="study-heading" hidden>
+      <!-- 상단 스티키 상태 & 컨트롤 바 -->
+      <div class="glass-card study-dashboard" id="study-toolbar">
+        <div class="dash-left">
+          <div class="dash-stat">
+            <span class="stat-label">진행 상황</span>
+            <span class="stat-val"><b id="stat-solved">0</b> / <span id="stat-total">0</span> 빈칸</span>
+          </div>
+          <div class="dash-stat">
+            <span class="stat-label">정답률</span>
+            <span class="stat-val highlight" id="stat-accuracy">0%</span>
+          </div>
+          <div class="progress-track" aria-label="학습 진행률">
+            <div class="progress-bar" id="study-progress-bar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="dash-right">
+          <button id="btn-filter-star" class="ctrl-btn" type="button" title="별표 체크한 중요 문장만 모아보기">
+            <span class="btn-icon">⭐</span> <span class="btn-lbl" id="filter-star-text">별표만 보기</span>
+          </button>
+          <button id="btn-listen-all" class="ctrl-btn" type="button" title="전체 문장 원어민 발음 연속 듣기">
+            <span class="btn-icon">🔊</span> <span class="btn-lbl">전체 듣기</span>
+          </button>
+          <button id="btn-toggle-answers" class="ctrl-btn" type="button" title="모든 빈칸의 정답을 한번에 확인">
+            <span class="btn-icon">👁️</span> <span class="btn-lbl">정답 보기</span>
+          </button>
+          <button id="btn-reset-study" class="ctrl-btn" type="button" title="모든 입력 초기화 후 다시 풀기">
+            <span class="btn-icon">🔄</span> <span class="btn-lbl">다시 풀기</span>
+          </button>
+          <button id="btn-back-to-input" class="ctrl-btn accent-ctrl" type="button">
+            <span class="btn-icon">⚙️</span> <span class="btn-lbl">난이도/본문 수정</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 문제 카드 목록 컨테이너 -->
+      <div id="study-cards-container" class="cards-container">
+        <!-- 자바스크립트로 문장 카드들이 렌더링됩니다 -->
+      </div>
+
+      <!-- 완료 축하 모달 / 피드백 카드 -->
+      <div id="completion-banner" class="glass-card completion-card" hidden>
+        <div class="comp-icon">🎉</div>
+        <h3 class="comp-title">축하합니다! 모든 빈칸을 완성했습니다!</h3>
+        <p class="comp-desc">본문 전체 암기를 성공적으로 마쳤습니다. 인쇄해서 실전 테스트를 치르거나 더 높은 난이도에 도전해 보세요!</p>
+        <div class="comp-actions">
+          <button id="btn-comp-retry" class="chip-btn large" type="button">🔄 다른 난이도로 다시하기</button>
+          <button id="btn-comp-print" class="chip-btn large primary" type="button">🖨️ 학습지 시험지 인쇄하기</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>PassageMemo &bull; 고등학교 내신 &bull; 수능 &bull; 토익 &bull; 공무원 영어 본문 빈칸 완성 암기 도우미</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg fail:', err));
+      });
+    }
+  </script>
+</body>
+</html>

@@ -32,3 +32,8 @@
 
 .work { padding: 8px 10px; background: rgba(0,0,0,.35); border-radius: 8px; overflow-x: auto; }
 .katex { font-size: 1.1em; }
+
+.voice-bar { display: flex; gap: 10px; margin-bottom: 14px; }
+.voice-bar button { flex: 1; }
+.voice-bar .stop { flex: none; background: rgba(255,255,255,.12); color: #e8ecff; }
+.step.speaking, .final.speaking { outline: 2px solid #5eead4; box-shadow: 0 0 18px rgba(94,234,212,.4); }

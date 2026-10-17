@@ -239,7 +239,53 @@ SVG 규칙: <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"> 로 �
       node.classList.add('reveal');
       out.appendChild(node);
     });
-    if (window.renderMathInElement) {
+  // LaTeX 수식을 말로 읽기 좋은 한국어로 변환
+  function toSpeech(t) {
+    return String(t || '')
+      .replace(/\$/g, '')
+      .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '$2분의 $1')
+      .replace(/\\sqrt\{([^{}]*)\}/g, '루트 $1')
+      .replace(/\\times|\\cdot|\*/g, ' 곱하기 ')
+      .replace(/\\div|\//g, ' 나누기 ')
+      .replace(/\^\{?2\}?/g, ' 제곱')
+      .replace(/\^\{?3\}?/g, ' 세제곱')
+      .replace(/\^\{?([^{}\s]+)\}?/g, ' $1제곱')
+      .replace(/\\[a-zA-Z]+/g, ' ')
+      .replace(/[{}]/g, '')
+      .replace(/\+/g, ' 더하기 ')
+      .replace(/=/g, ' 는 ')
+      .replace(/(^|[\s(])[-−](?=[\d(a-zA-Z])/g, '$1마이너스 ')
+      .replace(/[-−]/g, ' 빼기 ');
+  }
+
+  function speakSolution(sol, items) {
+    if (!('speechSynthesis' in window)) { alert('이 브라우저는 음성 읽기를 지원하지 않아요.'); return; }
+    stopSpeech();
+    const queue = [{ text: '문제. ' + toSpeech(sol.problem), node: null }];
+    const steps = sol.steps || [];
+    steps.forEach((s, k) => queue.push({
+      text: `${k + 1}단계. ${toSpeech(s.title)}. ${toSpeech(s.explanation)}. ${toSpeech(s.work)}`,
+      node: items[k]
+    }));
+    if (sol.answer) queue.push({ text: '정답은 ' + toSpeech(sol.answer) + ' 입니다.', node: items[steps.length] });
+    const voice = speechSynthesis.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith('ko'));
+    queue.forEach(q => {
+      const u = new SpeechSynthesisUtterance(q.text);
+      u.lang = 'ko-KR'; if (voice) u.voice = voice;
+      u.onstart = () => { document.querySelectorAll('.speaking').forEach(n => n.classList.remove('speaking')); if (q.node) q.node.classList.add('speaking'); };
+      speechSynthesis.speak(u);
+    });
+    const last = new SpeechSynthesisUtterance(' ');
+    last.onend = () => document.querySelectorAll('.speaking').forEach(n => n.classList.remove('speaking'));
+    speechSynthesis.speak(last);
+  }
+
+  function stopSpeech() {
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    document.querySelectorAll('.speaking').forEach(n => n.classList.remove('speaking'));
+  }
+
+  if (window.renderMathInElement) {
       renderMathInElement(out, {
         delimiters: [
           { left: '$$', right: '$$', display: true },
@@ -250,6 +296,15 @@ SVG 규칙: <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"> 로 �
         throwOnError: false
       });
     }
+
+    const bar = el('div', 'voice-bar');
+    const play = el('button', '', '🔊 말로 설명 듣기');
+    const stop = el('button', 'stop', '⏹ 멈추기');
+    play.type = stop.type = 'button';
+    play.addEventListener('click', () => speakSolution(sol, items));
+    stop.addEventListener('click', stopSpeech);
+    bar.append(play, stop);
+    out.prepend(bar);
   }
 
   $('solve-btn').addEventListener('click', solve);

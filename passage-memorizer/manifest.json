@@ -1,0 +1,37 @@
+{
+  "name": "PassageMemo - 영어 본문 빈칸 암기 & 해석 마스터",
+  "short_name": "PassageMemo",
+  "description": "영어 본문과 해석을 입력하면 난이도별 빈칸을 스마트하게 자동 생성하고 바로 밑줄에 직관적인 해석을 제공하는 본문 암기 완성 도구",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0f19",
+  "theme_color": "#6366f1",
+  "dir": "ltr",
+  "lang": "ko",
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

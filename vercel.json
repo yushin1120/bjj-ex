@@ -4,12 +4,16 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/",
-      "destination": "/주짓수게임/index.html"
+      "source": "/job-test",
+      "destination": "/job-test/index.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/주짓수게임/$1"
+      "source": "/job-test/(.*)",
+      "destination": "/job-test/$1"
+    },
+    {
+      "source": "/",
+      "destination": "/주짓수게임/index.html"
     }
   ]
 }
