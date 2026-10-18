@@ -2,7 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>PassageMemo - 영어 본문 빈칸 암기 & 해석 마스터</title>
   <meta name="description" content="영어 본문과 해석을 입력하면 난이도별로 스마트하게 빈칸을 뚫어주고 바로 밑줄에 직관적인 해석을 제공하는 최고의 본문 암기 학습 도구">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,13 +44,19 @@
       </div>
       <nav class="nav-actions">
         <button id="btn-mode-input" class="nav-tab active" type="button" aria-selected="true">
-          <span class="tab-icon">✏️</span> 본문 입력 &amp; 설정
+          <span class="tab-icon">✏️</span>
+          <span class="tab-text-full">본문 입력 &amp; 설정</span>
+          <span class="tab-text-short">입력</span>
         </button>
         <button id="btn-mode-study" class="nav-tab" type="button" aria-selected="false">
-          <span class="tab-icon">🎯</span> 빈칸 학습하기
+          <span class="tab-icon">🎯</span>
+          <span class="tab-text-full">빈칸 학습하기</span>
+          <span class="tab-text-short">학습</span>
         </button>
         <button id="btn-print-sheet" class="nav-btn print-btn" type="button" title="학습지 시험지 형태로 인쇄하거나 PDF로 저장">
-          <span class="tab-icon">🖨️</span> 시험지 인쇄
+          <span class="tab-icon">🖨️</span>
+          <span class="tab-text-full">시험지 인쇄</span>
+          <span class="tab-text-short">인쇄</span>
         </button>
       </nav>
     </div>

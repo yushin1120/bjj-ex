@@ -496,8 +496,12 @@ Have the courage to follow your heart and intuition.`;
               input.autocapitalize = 'off';
               input.spellcheck = false;
 
-              // 글자 수 기반 width 계산 (글자당 약 13px)
-              const inputWidth = Math.max(48, token.text.length * 13 + 18);
+              // 글자 수 기반 width 계산 (모바일 화면 폭에 맞춰 유연하게 조정)
+              const isMobile = window.innerWidth <= 680;
+              const charW = isMobile ? 10.5 : 13;
+              const minW = isMobile ? 38 : 48;
+              const padW = isMobile ? 12 : 18;
+              const inputWidth = Math.max(minW, Math.round(token.text.length * charW + padW));
               input.style.width = `${inputWidth}px`;
 
               // 첫 글자 힌트
