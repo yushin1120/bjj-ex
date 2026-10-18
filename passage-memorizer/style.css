@@ -840,12 +840,33 @@ body {
 }
 
 /* Options Row */
+.options-details {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
+}
+
+.options-summary {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.options-summary:hover {
+  color: #fff;
+}
+
 .options-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 6px;
 }
 
 @media (max-width: 640px) {
@@ -1438,61 +1459,62 @@ body {
 }
 
 @media (max-width: 680px) {
-  /* 1. 기본 레이아웃 & 안전영역(Safe Area) */
+  /* 1. 기본 레이아웃 & 폰트 크기 섬세화 */
   body {
-    font-size: 14px;
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+    font-size: 13px;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
     overflow-x: hidden;
   }
 
   .main-container {
-    padding: 12px 10px 40px;
-    padding-left: max(10px, env(safe-area-inset-left));
-    padding-right: max(10px, env(safe-area-inset-right));
+    padding: 8px 8px 30px;
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
   }
 
-  /* 2. 헤더 컴팩트 모바일화 */
+  /* 2. 헤더 슬림 & 세련된 모바일 디자인 */
   .app-header {
     padding-top: env(safe-area-inset-top, 0px);
   }
 
   .header-inner {
-    padding: 8px 10px;
-    gap: 8px;
+    padding: 6px 8px;
+    gap: 6px;
   }
 
   .brand {
-    gap: 8px;
+    gap: 6px;
   }
 
   .brand-badge {
-    width: 32px;
-    height: 32px;
-    font-size: 0.9rem;
-    border-radius: 8px;
+    width: 28px;
+    height: 28px;
+    font-size: 0.82rem;
+    border-radius: 7px;
   }
 
   .brand-text .logo-title {
-    font-size: 1.08rem;
+    font-size: 1.02rem;
+    letter-spacing: -0.3px;
   }
 
   .brand-text .logo-subtitle {
-    display: none; /* 모바일에서 수직 공간 절약 */
+    display: none; /* 모바일 세로 공간 절약 */
   }
 
   .nav-actions {
-    gap: 4px;
+    gap: 3px;
   }
 
   .nav-tab, .nav-btn {
-    padding: 6px 9px;
-    font-size: 0.78rem;
-    gap: 4px;
-    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 0.74rem;
+    gap: 3px;
+    border-radius: 5px;
   }
 
   .tab-icon {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 
   .tab-text-full {
@@ -1504,204 +1526,264 @@ body {
     font-weight: 700;
   }
 
-  /* 3. 본문 입력 화면 모바일 최적화 */
+  /* 3. 본문 입력 화면 (⭐️ 스크롤 없이 한 화면에 본문과 해석, 난이도, 시작버튼 모두 배치!) */
   .section-hero {
-    margin-bottom: 14px;
+    margin-bottom: 5px;
   }
 
-  .hero-title {
-    font-size: 1.25rem;
-    line-height: 1.35;
-    margin-bottom: 4px;
-  }
-
-  .hero-desc {
-    font-size: 0.8rem;
-    line-height: 1.45;
-    margin-bottom: 10px;
+  /* 큰 제목과 부가설명은 모바일에서 숨겨 스크롤을 완전히 없앰 */
+  .hero-title, .hero-desc {
+    display: none;
   }
 
   .ocr-trigger-wrap {
-    margin-top: 10px;
+    margin-top: 0;
+    margin-bottom: 4px;
   }
 
   .ocr-btn {
     width: 100%;
     justify-content: center;
-    padding: 9px 12px;
-    font-size: 0.82rem;
-    border-radius: 10px;
-    gap: 6px;
+    padding: 6px 10px;
+    font-size: 0.76rem;
+    border-radius: 8px;
+    gap: 5px;
+    box-shadow: none;
+  }
+
+  .ocr-btn-icon {
+    font-size: 0.9rem;
   }
 
   .ocr-btn-text {
-    font-size: 0.82rem;
+    font-size: 0.76rem;
     letter-spacing: -0.3px;
   }
 
   .ocr-badge {
-    font-size: 0.65rem;
-    padding: 1px 5px;
+    font-size: 0.6rem;
+    padding: 1px 4px;
   }
 
+  /* 꿀팁 배너 컴팩트 1줄화 */
   .extract-guide-banner {
-    padding: 10px 12px;
-    gap: 8px;
-    border-radius: 10px;
-    margin-bottom: 14px;
+    padding: 5px 8px;
+    gap: 5px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 0.74rem;
   }
 
   .guide-tag {
-    font-size: 0.72rem;
-    padding: 2px 7px;
+    font-size: 0.64rem;
+    padding: 1px 5px;
+  }
+
+  .guide-title {
+    display: none;
   }
 
   .guide-content {
-    font-size: 0.84rem;
-    line-height: 1.5;
+    font-size: 0.74rem;
+    line-height: 1.35;
   }
 
   .copy-quote-btn {
-    font-size: 0.82rem;
-    padding: 4px 6px;
-    margin: 2px 0;
-    white-space: normal;
-    text-align: left;
-    display: inline;
-    border-radius: 6px;
+    font-size: 0.72rem;
+    padding: 1px 5px;
+    margin: 0;
+    border-radius: 5px;
   }
 
   .copy-pill {
-    font-size: 0.68rem;
-    padding: 1px 5px;
-    margin-left: 2px;
+    font-size: 0.62rem;
+    padding: 1px 4px;
   }
 
-  /* 입력 카드 */
+  /* ⭐️ 영어 본문 & 한국어 해석 입력창: 스크롤 불필요 2단 콤팩트 카드 */
   .input-grid {
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 5px;
   }
 
   .glass-card.input-card {
-    padding: 14px 12px;
-    border-radius: 12px;
-  }
-
-  .head-title {
-    font-size: 0.92rem;
-  }
-
-  .styled-textarea {
-    min-height: 140px;
-    padding: 10px 12px;
-    font-size: 0.9rem;
-    line-height: 1.6;
+    padding: 6px 8px;
     border-radius: 10px;
   }
 
-  /* 4. 빈칸 난이도 선택 (한 줄에 5개 나란히 콤팩트 배치) */
+  .card-head {
+    margin-bottom: 2px;
+  }
+
+  .head-badge {
+    font-size: 0.62rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  .head-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .count-pill {
+    font-size: 0.62rem;
+    padding: 1px 4px;
+  }
+
+  .input-hint {
+    display: none; /* 불필요한 세로 여백 제거 */
+  }
+
+  /* 텍스트 입력창 높이를 68px로 조정하여 두 창이 한 화면에 쏙 들어옴! */
+  .styled-textarea {
+    height: 68px !important;
+    min-height: 68px !important;
+    max-height: 120px;
+    padding: 6px 8px;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    border-radius: 7px;
+    resize: vertical;
+  }
+
+  /* 4. 빈칸 난이도 선택 (한 줄에 5개 나란히 콤팩트 바) */
   .config-card {
-    padding: 14px 12px;
-    border-radius: 12px;
-    gap: 16px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    gap: 5px;
+    margin-top: 0;
   }
 
   .config-title {
-    font-size: 0.92rem;
-    margin-bottom: 8px;
+    display: none;
   }
 
   .level-selector {
     display: grid;
     grid-template-columns: repeat(5, 1fr) !important;
-    gap: 4px !important;
+    gap: 3px !important;
   }
 
   .level-pill {
-    padding: 7px 2px;
-    border-radius: 8px;
+    padding: 4px 1px;
+    border-radius: 6px;
     gap: 1px;
   }
 
   .lvl-num {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 800;
   }
 
   .lvl-name {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 700;
     white-space: nowrap;
     letter-spacing: -0.5px;
   }
 
   .lvl-percent {
-    font-size: 0.58rem;
+    font-size: 0.52rem;
     letter-spacing: -0.5px;
+  }
+
+  /* 상세 옵션: 접이식 1줄 요약 */
+  .options-details {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 2px;
+  }
+
+  .options-summary {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 3px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    user-select: none;
   }
 
   .options-row {
     grid-template-columns: 1fr;
-    gap: 12px;
-    padding-top: 10px;
+    gap: 6px;
+    padding-top: 4px;
   }
 
   .option-label {
-    font-size: 0.82rem;
-    margin-bottom: 6px;
+    font-size: 0.74rem;
+    margin-bottom: 4px;
   }
 
   .toggle-option, .custom-checkbox {
-    font-size: 0.82rem;
+    font-size: 0.75rem;
+    gap: 6px;
+  }
+
+  .action-footer {
+    padding-top: 3px;
+    gap: 3px;
+  }
+
+  .warning-text {
+    font-size: 0.74rem;
+    padding: 3px 8px;
   }
 
   .start-btn {
     width: 100%;
-    padding: 13px 16px;
-    font-size: 1rem;
-    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    border-radius: 10px;
+    margin-top: 2px;
   }
 
   /* 5. ⭐️ 학습 대시보드 (스티키 툴바) 모바일 슬림화 */
   .study-dashboard {
     position: sticky;
-    top: 50px;
+    top: 44px;
     z-index: 90;
-    padding: 8px 10px;
-    margin-bottom: 12px;
-    border-radius: 12px;
-    gap: 8px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    padding: 6px 8px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    gap: 5px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   }
 
   .dash-left {
-    gap: 10px;
+    gap: 8px;
     width: 100%;
     justify-content: space-between;
   }
 
   .stat-label {
-    font-size: 0.66rem;
+    font-size: 0.64rem;
   }
 
   .stat-val {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .progress-track {
-    height: 6px;
-    min-width: 50px;
+    height: 5px;
+    min-width: 45px;
   }
 
-  /* 툴바 버튼 가로 스크롤로 한 줄 유지 - 화면 덮지 않음! */
+  /* 툴바 액션 버튼 가로 1줄 스크롤 */
   .dash-right {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     width: 100%;
-    gap: 5px;
-    padding-bottom: 2px;
+    gap: 4px;
+    padding-bottom: 1px;
     scrollbar-width: none;
   }
 
@@ -1711,125 +1793,124 @@ body {
 
   .ctrl-btn {
     flex-shrink: 0;
-    padding: 5px 9px;
-    font-size: 0.74rem;
-    border-radius: 6px;
-    gap: 4px;
-    white-space: nowrap;
-  }
-
-  /* 6. ⭐️ 문장 카드 모바일 최적화 */
-  .cards-container {
-    gap: 12px;
-  }
-
-  .sentence-card {
-    padding: 14px 12px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-  }
-
-  .card-topbar {
-    margin-bottom: 10px;
-    padding-bottom: 7px;
-  }
-
-  .card-topbar-left {
-    gap: 6px;
-  }
-
-  .star-toggle-btn {
-    padding: 3px 7px;
+    padding: 4px 8px;
     font-size: 0.72rem;
     border-radius: 5px;
     gap: 3px;
+    white-space: nowrap;
+  }
+
+  /* 6. ⭐️ 문장 카드 모바일 글씨 크기 & 카드 최적화 */
+  .cards-container {
+    gap: 8px;
+  }
+
+  .sentence-card {
+    padding: 10px 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  }
+
+  .card-topbar {
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+  }
+
+  .card-topbar-left {
+    gap: 5px;
+  }
+
+  .star-toggle-btn {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    border-radius: 4px;
+    gap: 2px;
   }
 
   .star-toggle-btn .star-icon {
-    font-size: 0.92rem;
+    font-size: 0.85rem;
   }
 
   .sentence-badge {
-    font-size: 0.72rem;
-    padding: 2px 6px;
+    font-size: 0.7rem;
+    padding: 1px 5px;
   }
 
   .card-quick-actions {
-    gap: 4px;
+    gap: 3px;
   }
 
   .action-icon-btn {
-    padding: 3px 6px;
-    font-size: 0.88rem;
+    padding: 2px 5px;
+    font-size: 0.82rem;
   }
 
-  /* 영어 문장 및 빈칸 폰트 & 인풋 모바일 터치 최적화 */
+  /* 영어 문장 및 빈칸 폰트 세련되고 아담하게 */
   .sentence-en-box {
-    font-size: 1.06rem;
-    line-height: 1.85;
-    margin-bottom: 8px;
-    gap: 5px 3px;
+    font-size: 0.96rem;
+    line-height: 1.75;
+    margin-bottom: 6px;
+    gap: 4px 3px;
   }
 
-  /* 인풋에 font-size: 16px 이상을 적용하여 iOS Safari 자동 확대 방지 */
   .blank-input {
-    font-size: 16px !important;
-    min-width: 38px;
-    height: 32px;
-    padding: 1px 4px;
-    border-radius: 5px;
+    font-size: 15px !important;
+    min-width: 36px;
+    height: 28px;
+    padding: 1px 3px;
+    border-radius: 4px;
     touch-action: manipulation;
   }
 
   .blank-flip {
-    font-size: 0.98rem;
-    min-width: 38px;
-    height: 32px;
-    padding: 2px 6px;
-    border-radius: 5px;
+    font-size: 0.92rem;
+    min-width: 36px;
+    height: 28px;
+    padding: 1px 5px;
+    border-radius: 4px;
   }
 
   /* 바로 밑줄 해석 박스 모바일 */
   .sentence-ko-row {
-    padding: 8px 10px;
-    border-radius: 0 8px 8px 0;
-    gap: 8px;
-    margin-top: 8px;
+    padding: 6px 8px;
+    border-radius: 0 6px 6px 0;
+    gap: 6px;
+    margin-top: 6px;
   }
 
   .ko-tag {
-    font-size: 0.65rem;
-    padding: 1px 5px;
+    font-size: 0.62rem;
+    padding: 1px 4px;
   }
 
   .ko-text-content {
-    font-size: 0.88rem;
-    line-height: 1.5;
+    font-size: 0.84rem;
+    line-height: 1.45;
   }
 
   /* 완료 축하 배너 모바일 */
   .completion-card {
-    padding: 24px 14px;
-    margin-top: 18px;
+    padding: 20px 12px;
+    margin-top: 14px;
   }
 
   .comp-icon {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
 
   .comp-title {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
   }
 
   .comp-desc {
-    font-size: 0.85rem;
-    margin-bottom: 14px;
+    font-size: 0.82rem;
+    margin-bottom: 12px;
   }
 
   .chip-btn.large {
     width: 100%;
-    padding: 10px 14px;
-    font-size: 0.88rem;
+    padding: 9px 12px;
+    font-size: 0.85rem;
   }
 }
 

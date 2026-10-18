@@ -1,9 +1,9 @@
 /**
  * PassageMemo Service Worker (sw.js)
- * Provides offline caching & Google Play PWA installability
+ * Network-First Strategy for Instant Live Updates
  */
 
-const CACHE_NAME = 'passagememo-v1';
+const CACHE_NAME = 'passagememo-v4-networkfirst';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -16,10 +16,11 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
@@ -37,24 +38,22 @@ self.addEventListener('activate', event => {
   );
 });
 
+// Network-First: Always fetch latest from server first; fallback to cache if offline
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then(networkResponse => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
+    fetch(event.request).then(networkResponse => {
+      if (networkResponse && networkResponse.status === 200) {
+        const responseClone = networkResponse.clone();
         caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache);
+          cache.put(event.request, responseClone);
         });
-        return networkResponse;
-      }).catch(() => {
+      }
+      return networkResponse;
+    }).catch(() => {
+      return caches.match(event.request).then(cachedResponse => {
+        if (cachedResponse) return cachedResponse;
         if (event.request.destination === 'document') {
           return caches.match('./index.html');
         }

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2.5">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -213,39 +213,42 @@
           </div>
         </div>
 
-        <div class="options-row">
-          <div class="option-col">
-            <h4 class="option-label">학습 방식</h4>
-            <div class="study-mode-toggle">
-              <label class="toggle-option">
-                <input type="radio" name="studyMode" value="typing" id="mode-typing" checked>
-                <span class="radio-custom"></span>
-                <span>⌨️ 직접 타이핑 (실시간 채점)</span>
-              </label>
-              <label class="toggle-option">
-                <input type="radio" name="studyMode" value="flip" id="mode-flip">
-                <span class="radio-custom"></span>
-                <span>👀 클릭 확인 모드 (가림판 열기)</span>
-              </label>
+        <details class="options-details">
+          <summary class="options-summary">⚙️ 상세 옵션 (타이핑/플립 모드, 첫글자 힌트)</summary>
+          <div class="options-row">
+            <div class="option-col">
+              <h4 class="option-label">학습 방식</h4>
+              <div class="study-mode-toggle">
+                <label class="toggle-option">
+                  <input type="radio" name="studyMode" value="typing" id="mode-typing" checked>
+                  <span class="radio-custom"></span>
+                  <span>⌨️ 직접 타이핑 (실시간 채점)</span>
+                </label>
+                <label class="toggle-option">
+                  <input type="radio" name="studyMode" value="flip" id="mode-flip">
+                  <span class="radio-custom"></span>
+                  <span>👀 클릭 확인 모드 (가림판 열기)</span>
+                </label>
+              </div>
             </div>
-          </div>
 
-          <div class="option-col">
-            <h4 class="option-label">추가 힌트 &amp; 설정</h4>
-            <div class="checkbox-group">
-              <label class="custom-checkbox">
-                <input type="checkbox" id="opt-first-letter" checked>
-                <span class="check-box"></span>
-                <span>첫 글자 힌트 제공 (예: <code class="hint-code">c____</code>)</span>
-              </label>
-              <label class="custom-checkbox">
-                <input type="checkbox" id="opt-case-sensitive">
-                <span class="check-box"></span>
-                <span>대소문자 엄격 구분</span>
-              </label>
+            <div class="option-col">
+              <h4 class="option-label">추가 힌트 &amp; 설정</h4>
+              <div class="checkbox-group">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="opt-first-letter" checked>
+                  <span class="check-box"></span>
+                  <span>첫 글자 힌트 제공 (예: <code class="hint-code">c____</code>)</span>
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="opt-case-sensitive">
+                  <span class="check-box"></span>
+                  <span>대소문자 엄격 구분</span>
+                </label>
+              </div>
             </div>
           </div>
-        </div>
+        </details>
 
         <div class="action-footer">
           <div id="mismatch-warning" class="warning-text" hidden>
@@ -318,11 +321,13 @@
     <p>PassageMemo &bull; 고등학교 내신 &bull; 수능 &bull; 토익 &bull; 공무원 영어 본문 빈칸 완성 암기 도우미</p>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2.5"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg fail:', err));
+        navigator.serviceWorker.register('sw.js?v=2.5').then(reg => {
+          reg.update();
+        }).catch(err => console.log('SW reg fail:', err));
       });
     }
   </script>
